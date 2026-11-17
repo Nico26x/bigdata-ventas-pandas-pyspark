@@ -1,0 +1,34 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Archivos de datos generados
+datos/*.csv
+datos/*.parquet
+datos/*.json
+datos/*.jsonl
+
+# Resultados pesados
+resultados/*.csv
+resultados/*.parquet
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Entornos de desarrollo
+.vscode/
+.idea/
+
+# Archivos locales
+.env
+
+# Spark
+spark-warehouse/
+metastore_db/
+derby.log
