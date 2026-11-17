@@ -37,6 +37,40 @@ CAMPOS = [
 def preparar_carpetas():
     METRICAS.mkdir(parents=True, exist_ok=True)
     LOGS.mkdir(parents=True, exist_ok=True)
+    
+
+def verificar_cantidad_filas(cantidad_esperada):
+    """
+    Comprueba que el CSV contiene exactamente
+    la cantidad de transacciones indicada.
+    """
+
+    archivo = BASE / "datos" / "transacciones.csv"
+
+    if not archivo.exists():
+        raise FileNotFoundError(
+            f"No se encontro el archivo: {archivo}"
+        )
+
+    print("\nVerificando cantidad de registros...")
+
+    with archivo.open(
+        "r",
+        encoding="utf-8",
+        newline=""
+    ) as f:
+        cantidad_real = sum(1 for _ in f) - 1
+
+    print(f"Registros encontrados: {cantidad_real:,}")
+    print(f"Registros esperados: {cantidad_esperada:,}")
+
+    if cantidad_real != cantidad_esperada:
+        raise ValueError(
+            "La cantidad de registros no coincide. "
+            "Verifica el dataset antes de ejecutar."
+        )
+
+    print("Dataset verificado correctamente.\n")
 
 
 def construir_comando(version, chunksize):
@@ -317,6 +351,8 @@ def main():
         )
 
     preparar_carpetas()
+    
+    verificar_cantidad_filas(args.filas)
 
     for repeticion in range(1, args.repeticiones + 1):
         resultado = ejecutar_prueba(
