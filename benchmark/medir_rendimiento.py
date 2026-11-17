@@ -208,6 +208,36 @@ def ejecutar_prueba(
                 cpu_maxima,
                 cpu_total
             )
+            
+            
+            # Proteccion para evitar agotar la RAM.
+            # Si el equipo dispone de menos de 3 GB
+            # de RAM libre, se interrumpe la prueba.
+
+            ram_libre_gb = (
+                psutil.virtual_memory().available
+                / (1024 ** 3)
+            )
+
+            if ram_libre_gb < 3:
+                estado = "RAM_LIMIT"
+
+                print(
+                    "\nLimite de seguridad alcanzado. "
+                    f"RAM disponible: {ram_libre_gb:.2f} GB"
+                )
+
+                for p in reversed(procesos):
+                    try:
+                        p.kill()
+                    except (
+                        psutil.NoSuchProcess,
+                        psutil.AccessDenied,
+                    ):
+                        pass
+
+                break
+
 
             if proceso.poll() is not None:
                 break
@@ -233,7 +263,7 @@ def ejecutar_prueba(
 
     tiempo_total = time.perf_counter() - inicio
 
-    if estado != "TIMEOUT":
+    if estado not in ("TIMEOUT", "RAM_LIMIT"):
         estado = (
             "OK" if codigo_salida == 0 else "ERROR"
         )
@@ -353,6 +383,28 @@ def main():
     preparar_carpetas()
     
     verificar_cantidad_filas(args.filas)
+    
+    
+    memoria_disponible = (
+        psutil.virtual_memory().available / (1024 ** 3)
+    )
+
+    print(
+        f"\nRAM disponible antes de las pruebas: "
+        f"{memoria_disponible:.2f} GB"
+    )
+
+    if memoria_disponible < 5:
+        print(
+            "\nADVERTENCIA: hay menos de 5 GB de RAM "
+            "disponibles antes de iniciar."
+        )
+        print(
+            "Cierra aplicaciones innecesarias "
+            "antes de ejecutar pruebas grandes."
+        )
+        return
+
 
     for repeticion in range(1, args.repeticiones + 1):
         resultado = ejecutar_prueba(
