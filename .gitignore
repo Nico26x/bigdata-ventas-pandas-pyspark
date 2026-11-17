@@ -32,3 +32,11 @@ resultados/*.parquet
 spark-warehouse/
 metastore_db/
 derby.log
+
+# Resultados generados por ambos programas
+resultados/**/*.csv
+resultados/**/*.parquet
+
+# Mediciones y logs locales
+evidencias/metricas/*.csv
+evidencias/logs/*.log
