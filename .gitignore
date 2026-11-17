@@ -14,8 +14,7 @@ datos/*.json
 datos/*.jsonl
 
 # Resultados pesados
-resultados/*.csv
-resultados/*.parquet
+resultados/
 
 # Archivos temporales
 *.log
