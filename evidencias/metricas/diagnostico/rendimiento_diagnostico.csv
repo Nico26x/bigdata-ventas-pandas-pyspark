@@ -1,0 +1,9 @@
+fecha,version,filas,repeticion,chunksize,tiempo_segundos,ram_max_mb,cpu_max_porcentaje,estado,codigo_salida,ram_equipo_gb,procesador,sistema,python,archivo_log
+2026-11-17T18:04:57,tradicional,500000,1,,1.3258,4.68,104.2,OK,0,15.77,"Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",Windows-10-10.0.26200-SP0,3.11.9,evidencias\logs\tradicional_500000_rep1.log
+2026-11-17T18:04:59,tradicional,500000,2,,1.6445,4.75,0.0,OK,0,15.77,"Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",Windows-10-10.0.26200-SP0,3.11.9,evidencias\logs\tradicional_500000_rep2.log
+2026-11-17T18:05:00,tradicional,500000,3,,1.2902,4.91,0.0,OK,0,15.77,"Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",Windows-10-10.0.26200-SP0,3.11.9,evidencias\logs\tradicional_500000_rep3.log
+2026-11-17T18:05:07,chunks,500000,1,100000,1.3641,4.92,0.0,OK,0,15.77,"Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",Windows-10-10.0.26200-SP0,3.11.9,evidencias\logs\chunks_500000_rep1.log
+2026-11-17T18:05:08,chunks,500000,2,100000,1.3794,4.95,293.0,OK,0,15.77,"Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",Windows-10-10.0.26200-SP0,3.11.9,evidencias\logs\chunks_500000_rep2.log
+2026-11-17T18:05:09,chunks,500000,3,100000,1.2031,4.69,0.0,OK,0,15.77,"Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",Windows-10-10.0.26200-SP0,3.11.9,evidencias\logs\chunks_500000_rep3.log
+2026-11-17T18:07:46,tradicional,500000,1,,1.3954,216.0,556.84,OK,0,15.77,"Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",Windows-10-10.0.26200-SP0,3.11.9,evidencias\logs\tradicional_500000_rep1_20261117_180744_705789.log
+2026-11-17T18:07:53,chunks,500000,1,100000,1.344,121.82,227.28,OK,0,15.77,"Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",Windows-10-10.0.26200-SP0,3.11.9,evidencias\logs\chunks_500000_rep1_20261117_180752_575166.log

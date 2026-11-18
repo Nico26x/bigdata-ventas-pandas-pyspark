@@ -1,0 +1,123 @@
+WARNING: Using incubator modules: jdk.incubator.vector
+26/11/17 19:12:00 WARN Shell: Did not find winutils.exe: java.io.FileNotFoundException: java.io.FileNotFoundException: HADOOP_HOME and hadoop.home.dir are unset. -see https://cwiki.apache.org/confluence/display/HADOOP2/WindowsProblems
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/11/17 19:12:01 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+
+[Stage 1:=============================>                             (1 + 1) / 2]
+
+                                                                                
+== Physical Plan ==
+AdaptiveSparkPlan (17)
++- Sort (16)
+   +- Exchange (15)
+      +- HashAggregate (14)
+         +- Exchange (13)
+            +- HashAggregate (12)
+               +- InMemoryTableScan (1)
+                     +- InMemoryRelation (2)
+                           +- AdaptiveSparkPlan (11)
+                              +- Project (10)
+                                 +- BroadcastHashJoin Inner BuildRight (9)
+                                    :- Project (5)
+                                    :  +- Filter (4)
+                                    :     +- Scan csv  (3)
+                                    +- BroadcastExchange (8)
+                                       +- Filter (7)
+                                          +- Scan csv  (6)
+
+
+(1) InMemoryTableScan
+Output [3]: [cantidad#4, venta_neta#12, categoria#10]
+Arguments: [cantidad#4, venta_neta#12, categoria#10]
+
+(2) InMemoryRelation
+Arguments: [id_producto#2, fecha#1, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6, venta_neta#12, anio#13, mes#14, categoria#10], StorageLevel(disk, memory, deserialized, 1 replicas)
+
+(3) Scan csv 
+Output [6]: [fecha#1, id_producto#2, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6]
+Batched: false
+Location: InMemoryFileIndex [file:/C:/Proyectos/bigdata-ventas-pandas-pyspark/datos/transacciones.csv]
+PushedFilters: [IsNotNull(cantidad), IsNotNull(precio_unitario), GreaterThan(cantidad,0), GreaterThan(precio_unitario,0), IsNotNull(id_producto)]
+ReadSchema: struct<fecha:date,id_producto:int,region:string,cantidad:int,precio_unitario:bigint,descuento_pct:int>
+
+(4) Filter
+Input [6]: [fecha#1, id_producto#2, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6]
+Condition : (((((isnotnull(cantidad#4) AND isnotnull(precio_unitario#5L)) AND atleastnnonnulls(6, fecha#1, id_producto#2, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6)) AND (cantidad#4 > 0)) AND (precio_unitario#5L > 0)) AND isnotnull(id_producto#2))
+
+(5) Project
+Output [9]: [fecha#1, id_producto#2, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6, cast((cast(((cast(cantidad#4 as bigint) * precio_unitario#5L) * cast((100 - descuento_pct#6) as bigint)) as decimal(20,0)) / 100) as decimal(18,2)) AS venta_neta#12, year(fecha#1) AS anio#13, month(fecha#1) AS mes#14]
+Input [6]: [fecha#1, id_producto#2, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6]
+
+(6) Scan csv 
+Output [2]: [id_producto#8, categoria#10]
+Batched: false
+Location: InMemoryFileIndex [file:/C:/Proyectos/bigdata-ventas-pandas-pyspark/datos/productos.csv]
+PushedFilters: [IsNotNull(id_producto)]
+ReadSchema: struct<id_producto:int,categoria:string>
+
+(7) Filter
+Input [2]: [id_producto#8, categoria#10]
+Condition : (atleastnnonnulls(2, id_producto#8, categoria#10) AND isnotnull(id_producto#8))
+
+(8) BroadcastExchange
+Input [2]: [id_producto#8, categoria#10]
+Arguments: HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=26]
+
+(9) BroadcastHashJoin
+Left keys [1]: [id_producto#2]
+Right keys [1]: [id_producto#8]
+Join type: Inner
+Join condition: None
+
+(10) Project
+Output [10]: [id_producto#2, fecha#1, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6, venta_neta#12, anio#13, mes#14, categoria#10]
+Input [11]: [fecha#1, id_producto#2, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6, venta_neta#12, anio#13, mes#14, id_producto#8, categoria#10]
+
+(11) AdaptiveSparkPlan
+Output [10]: [id_producto#2, fecha#1, region#3, cantidad#4, precio_unitario#5L, descuento_pct#6, venta_neta#12, anio#13, mes#14, categoria#10]
+Arguments: isFinalPlan=false
+
+(12) HashAggregate
+Input [3]: [cantidad#4, venta_neta#12, categoria#10]
+Keys [1]: [categoria#10]
+Functions [3]: [partial_sum(venta_neta#12), partial_sum(cantidad#4), partial_count(1)]
+Aggregate Attributes [4]: [sum#260, isEmpty#261, sum#262L, count#263L]
+Results [5]: [categoria#10, sum#264, isEmpty#265, sum#266L, count#267L]
+
+(13) Exchange
+Input [5]: [categoria#10, sum#264, isEmpty#265, sum#266L, count#267L]
+Arguments: hashpartitioning(categoria#10, 200), ENSURE_REQUIREMENTS, [plan_id=44]
+
+(14) HashAggregate
+Input [5]: [categoria#10, sum#264, isEmpty#265, sum#266L, count#267L]
+Keys [1]: [categoria#10]
+Functions [3]: [sum(venta_neta#12), sum(cantidad#4), count(1)]
+Aggregate Attributes [3]: [sum(venta_neta#12)#80, sum(cantidad#4)#81L, count(1)#79L]
+Results [4]: [categoria#10, sum(venta_neta#12)#80 AS total_ventas#66, sum(cantidad#4)#81L AS cantidad_vendida#67L, count(1)#79L AS numero_transacciones#68L]
+
+(15) Exchange
+Input [4]: [categoria#10, total_ventas#66, cantidad_vendida#67L, numero_transacciones#68L]
+Arguments: rangepartitioning(categoria#10 ASC NULLS FIRST, 200), ENSURE_REQUIREMENTS, [plan_id=47]
+
+(16) Sort
+Input [4]: [categoria#10, total_ventas#66, cantidad_vendida#67L, numero_transacciones#68L]
+Arguments: [categoria#10 ASC NULLS FIRST], true, 0
+
+(17) AdaptiveSparkPlan
+Output [4]: [categoria#10, total_ventas#66, cantidad_vendida#67L, numero_transacciones#68L]
+Arguments: isFinalPlan=false
+
+
+Guardado: C:\Proyectos\bigdata-ventas-pandas-pyspark\resultados\pyspark\ventas_categoria.csv
+Guardado: C:\Proyectos\bigdata-ventas-pandas-pyspark\resultados\pyspark\ventas_region.csv
+Guardado: C:\Proyectos\bigdata-ventas-pandas-pyspark\resultados\pyspark\ventas_mensuales.csv
+Transacciones vßlidas: 99,019
+Tiempo total: 12.66 s
+CORRECTO: el proceso con PID 10548 (proceso secundario de PID 11588)
+ha sido terminado.
+CORRECTO: el proceso con PID 11588 (proceso secundario de PID 1280)
+ha sido terminado.
+CORRECTO: el proceso con PID 1280 (proceso secundario de PID 26292)
+ha sido terminado.
