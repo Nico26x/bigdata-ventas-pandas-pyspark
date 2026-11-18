@@ -73,6 +73,7 @@ def verificar_cantidad_filas(cantidad_esperada):
     print("Dataset verificado correctamente.\n")
 
 
+
 def construir_comando(version, chunksize):
     if version == "tradicional":
         return [
@@ -80,13 +81,24 @@ def construir_comando(version, chunksize):
             str(BASE / "pandas" / "procesamiento.py"),
         ]
 
-    return [
-        sys.executable,
-        str(BASE / "pandas" / "procesamiento_chunks.py"),
-        "--chunksize",
-        str(chunksize),
-    ]
-    
+    if version == "chunks":
+        return [
+            sys.executable,
+            str(BASE / "pandas" / "procesamiento_chunks.py"),
+            "--chunksize",
+            str(chunksize),
+        ]
+
+    if version == "spark":
+        return [
+            sys.executable,
+            str(BASE / "spark" / "procesamiento.py"),
+            "--memoria",
+            "2g",
+        ]
+
+    raise ValueError(f"Version no reconocida: {version}")
+
 
 def obtener_procesos(proceso_principal):
     """
@@ -334,12 +346,12 @@ def guardar_metrica(resultado):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Medicion experimental de pandas"
+        description="Medicion experimental de pandas y PySpark"
     )
 
     parser.add_argument(
         "--version",
-        choices=["tradicional", "chunks"],
+        choices=["tradicional", "chunks", "spark"],
         required=True,
     )
 
