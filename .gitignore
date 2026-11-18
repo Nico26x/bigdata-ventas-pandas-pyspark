@@ -12,6 +12,8 @@ datos/*.csv
 datos/*.parquet
 datos/*.json
 datos/*.jsonl
+datos/respaldo/
+datos/**/*.csv
 
 # Resultados pesados
 resultados/
@@ -19,6 +21,8 @@ resultados/
 # Archivos temporales
 *.log
 *.tmp
+__pycache__/
+*.pyc
 
 # Entornos de desarrollo
 .vscode/
@@ -35,6 +39,7 @@ derby.log
 # Resultados generados por ambos programas
 resultados/**/*.csv
 resultados/**/*.parquet
+resultados/pyspark/ventas_detalle.parquet/
 
 # Mediciones y logs locales
 evidencias/metricas/*.csv
